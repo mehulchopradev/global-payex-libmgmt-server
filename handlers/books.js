@@ -1,13 +1,14 @@
 import { createNewBook, deleteBookById, getBookById, getAllBooks } from '../services/books.js';
 
-export function handleGetAllBooks(req, res) {
-  res.send(getAllBooks());
+export async function handleGetAllBooks(req, res) {
+  const books = await getAllBooks();
+  res.send(books);
 }
 
-export function handleGetBook(req, res) {
+export async function handleGetBook(req, res) {
     const bookId = req.params.bookId;
-    const iBookId = parseInt(bookId);
-    const book = getBookById(iBookId);
+    // const iBookId = parseInt(bookId);
+    const book = await getBookById(bookId);
     res.send(book);
   
     /* if (book) {
@@ -17,10 +18,10 @@ export function handleGetBook(req, res) {
     } */
 }
 
-export function handleDeleteBook(req, res) {
+export async function handleDeleteBook(req, res) {
     const bookId = req.params.bookId;
-    const iBookId = parseInt(bookId);
-    deleteBookById(iBookId);
+    // const iBookId = parseInt(bookId);
+    await deleteBookById(bookId);
     res.sendStatus(204);
   
     /* if (index !== -1) {
@@ -31,8 +32,8 @@ export function handleDeleteBook(req, res) {
     } */
 }
 
-export function handleCreateBook(req, res) {
+export async function handleCreateBook(req, res) {
   const data = req.body;
-  const newBook = createNewBook(data);
+  const newBook = await createNewBook(data);
   res.status(201).send(newBook);
 }

@@ -1,4 +1,6 @@
-let id = 3;
+import Book from '../models/book.js';
+
+/* let id = 3;
 
 const books = [
   {
@@ -19,24 +21,31 @@ const books = [
     price: 3000,
     pages: 800
   }
-];
+]; */
 
-export function createNewBook(data) {
-  const book = { ...data };
+export async function createNewBook(data) {
+  /* const book = { ...data };
   book.id = ++id;
-  books.push(book);
+  books.push(book); */
+
+  let book = new Book(data);
+  book = await book.save();
+
   return book;
 }
 
-export function deleteBookById(bookId) {
-  const index = books.findIndex(book => book.id === bookId);
-  books.splice(index, 1);
+export async function deleteBookById(bookId) {
+  const deletedDoc = await Book.findByIdAndDelete(bookId).exec();
+  return deletedDoc;
 }
 
-export function getBookById(bookId) {
-  return books.find(book => book.id === bookId);
+export async function getBookById(bookId) {
+  const book = await Book.findById(bookId).exec();
+  return book;
+  // return books.find(book => book.id === bookId);
 }
 
-export function getAllBooks() {
+export async function getAllBooks() {
+  const books = await Book.find().exec()
   return books;
 }

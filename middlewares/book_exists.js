@@ -1,10 +1,10 @@
 import { getBookById } from '../services/books.js';
 
-export default function bookExists(req, res, next) {
+export default async function bookExists(req, res, next) {
   const bookId = req.params.bookId;
-  const iBookId = parseInt(bookId);
+  // const iBookId = parseInt(bookId);
 
-  const book = getBookById(iBookId);
+  const book = await getBookById(bookId);
   if (book) {
     next();
   } else {
