@@ -2,6 +2,22 @@ import mongoose from 'mongoose';
 
 const { Schema, model } = mongoose;
 
+const issuanceHistorySchema = new Schema({
+  bookName: {
+    type: String,
+    required: true,
+  },
+  action: {
+    type: String,
+    required: true,
+    enum: ['Issued', 'Returned']
+  },
+  date: {
+    type: Date,
+    required: true
+  }
+})
+
 const addressSchema = new Schema({
   country: {
     type: String,
@@ -25,7 +41,8 @@ const studentsSchema = new Schema({
   },
   gender: {
     type: String,
-    required: true
+    required: true,
+    enum: ['m', 'f']
   },
   roll: {
     type: Number,
@@ -33,13 +50,15 @@ const studentsSchema = new Schema({
   },
   email: {
     type: String,
-    required: false
+    required: false,
+    match: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
   },
   contacts: {
     type: Array,
     required: true
   },
-  address: addressSchema
+  address: addressSchema,
+  issuanceHistory: [issuanceHistorySchema]
 });
 
 // Model for that collection using the schema

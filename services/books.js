@@ -1,4 +1,6 @@
 import Book from '../models/book.js';
+import { getStudentById } from './students.js';
+import mongoose from 'mongoose';
 
 /* let id = 3;
 
@@ -30,7 +32,6 @@ export async function createNewBook(data) {
 
   let book = new Book(data);
   book = await book.save();
-
   return book;
 }
 
@@ -46,6 +47,72 @@ export async function getBookById(bookId) {
 }
 
 export async function getAllBooks() {
-  const books = await Book.find().exec()
+  /* const books = await Book.find({
+    price: { $gt: 500 }
+  }, {
+    publicationHouseId: 0
+  }).exec() */
+
+  /* const books = await Book
+    .find()
+    .populate('publicationHouseId', ['name', 'ratings'])
+    .exec(); */
+
+  const books = await Book.find();
   return books;
 }
+
+export async function issueBook(studentId, bookId) {
+  let book = await getBookById(bookId);
+  book.issuedStudents.push(studentId);
+  book = await book.save();
+
+  let student = await getStudentById(studentId);
+  student.issuanceHistory.push({
+    bookName: book.title,
+    action: 'Issued',
+    date: new Date()
+  });
+  student = await student.save();
+
+  return [book, student];
+}
+
+// Supports transaction but will work in a replicaset environment!
+/* export async function issueBook(studentId, bookId) {
+  const session = await mongoose.startSession();
+
+  session.startTransaction();
+
+  try {
+    let book = await getBookById(bookId);
+    book.issuedStudents.push(studentId);
+    book = await book.save({
+      session: session
+    });
+
+    // deliberately build up an error
+    // let x = null;
+    // x.toUpperCase();
+
+    let student = await getStudentById(studentId);
+    student.issuanceHistory.push({
+      bookName: book.title,
+      action: 'Issued',
+      date: new Date()
+    });
+    student = await student.save({
+      session: session
+    });
+
+    await session.commitTransaction();
+
+    return [book, student];
+  } catch (err) {
+    console.log(err);
+    await session.abortTransaction();
+    throw err;
+  } finally {
+    await session.endSession();
+  }
+} */

@@ -1,4 +1,5 @@
-import { createNewBook, deleteBookById, getBookById, getAllBooks } from '../services/books.js';
+import mongoose from 'mongoose';
+import { createNewBook, deleteBookById, getBookById, getAllBooks, issueBook } from '../services/books.js';
 
 export async function handleGetAllBooks(req, res) {
   const books = await getAllBooks();
@@ -32,8 +33,22 @@ export async function handleDeleteBook(req, res) {
     } */
 }
 
-export async function handleCreateBook(req, res) {
+export async function handleCreateBook(req, res, next) {
   const data = req.body;
-  const newBook = await createNewBook(data);
-  res.status(201).send(newBook);
+  try {
+    const newBook = await createNewBook(data);
+    res.status(201).send(newBook);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function handleIssueBook(req, res, next) {
+  try {
+    const { studentId, bookId } = req.params;
+    await issueBook(studentId, bookId);
+    res.status(201).send({});
+  } catch (err) {
+    next(err);
+  }
 }

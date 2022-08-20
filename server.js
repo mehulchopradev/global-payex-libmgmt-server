@@ -4,6 +4,8 @@ import authorsRouter from './routes/authors.js';
 import booksRouter from './routes/books.js';
 import studentsRouter from './routes/students.js';
 
+import { handleError } from './middlewares/handle-error.js';
+
 const port = 8080;
 const app = express(); // Application of express
 const dbUrl = 'mongodb://localhost:27017/libmgmt_server_db';
@@ -13,6 +15,8 @@ app.use(express.json()); // ensures that express can parse the JSON data sent in
 app.use(authorsRouter);
 app.use(booksRouter);
 app.use(studentsRouter);
+
+app.use(handleError);
 
 
 app.get('/greeter', (req, res) => {
