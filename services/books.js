@@ -41,7 +41,10 @@ export async function deleteBookById(bookId) {
 }
 
 export async function getBookById(bookId) {
-  const book = await Book.findById(bookId).exec();
+  const book = await Book
+    .findById(bookId)
+    .populate('publicationHouseId')
+    .exec();
   return book;
   // return books.find(book => book.id === bookId);
 }

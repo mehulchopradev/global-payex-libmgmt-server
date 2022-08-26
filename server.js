@@ -1,5 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import cors from 'cors';
 import authorsRouter from './routes/authors.js';
 import booksRouter from './routes/books.js';
 import studentsRouter from './routes/students.js';
@@ -11,6 +12,7 @@ const app = express(); // Application of express
 const dbUrl = 'mongodb://localhost:27017/libmgmt_server_db';
 
 app.use(express.json()); // ensures that express can parse the JSON data sent in the request from the client
+app.use(cors());
 
 app.use(authorsRouter);
 app.use(booksRouter);
